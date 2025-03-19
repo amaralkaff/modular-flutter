@@ -54,31 +54,53 @@ class AuthService {
     UserRole role = UserRole.customer,
   }) async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // Initialize GoogleSignIn with proper scopes
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'profile',
+        ],
+      );
+      
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         return const Left('Google sign in aborted');
       }
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+      try {
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      final userCredential = await _auth.signInWithCredential(credential);
-      
-      // Check if this is a new user, and if so, save their role
-      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
-          'email': userCredential.user!.email,
-          'role': role.toString(),
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+        final userCredential = await _auth.signInWithCredential(credential);
+        
+        // Check if this is a new user, and if so, save their role
+        if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+          await _firestore.collection('users').doc(userCredential.user!.uid).set({
+            'email': userCredential.user!.email,
+            'role': role.toString(),
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        }
+        
+        return Right(userCredential.user!);
+      } catch (authError) {
+        // More detailed error for authentication failures
+        return Left('Authentication failed: ${authError.toString()}');
       }
-      
-      return Right(userCredential.user!);
     } catch (e) {
-      return Left(e.toString());
+      // Log the detailed error
+      print('Google Sign-In Error: $e');
+      if (e.toString().contains('network_error')) {
+        return const Left('Network error. Check your internet connection.');
+      } else if (e.toString().contains('canceled')) {
+        return const Left('Sign in was canceled.');
+      } else if (e.toString().contains('sign_in_failed')) {
+        return const Left('Sign in failed. Please check your Firebase configuration and try again.');
+      }
+      return Left('Google sign in error: ${e.toString()}');
     }
   }
 
@@ -139,5 +161,6 @@ class AuthService {
     }
   }
 
+  /// Gets the current logged in user
   User? get currentUser => _auth.currentUser;
 } 

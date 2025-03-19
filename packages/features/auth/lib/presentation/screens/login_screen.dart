@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auth/auth.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,8 +40,14 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
             );
+          } else if (state is Authenticated) {
+            // Navigate to home screen on successful login
+            context.goNamed('home');
           }
         },
         child: SafeArea(
@@ -96,13 +103,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Navigate to forgot password screen
+                        context.pushNamed('forgot-password');
+                      },
+                      child: const Text('Forgot Password?'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _onLoginPressed,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
                     child: const Text('Login'),
                   ),
                   const SizedBox(height: 16),
-                  OutlinedButton.icon(
+                  // Commenting out Google Sign-In temporarily until configured in Firebase
+                   OutlinedButton.icon(
                     onPressed: () {
                       context.read<AuthBloc>().add(SignInWithGoogle());
                     },
@@ -116,8 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () {
                       // Navigate to registration screen
+                      context.pushNamed('register');
                     },
-                    child: const Text('Don\'t have an account? Sign up'),
+                    child: const Text("Don't have an account? Sign up"),
                   ),
                 ],
               ),

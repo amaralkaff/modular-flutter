@@ -187,7 +187,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _authRepository.signOut();
     result.fold(
       (error) => emit(AuthError(error)),
-      (_) => emit(Unauthenticated()),
+      (_) {
+        emit(Unauthenticated());
+      },
     );
   }
 
