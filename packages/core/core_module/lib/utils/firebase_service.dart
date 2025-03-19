@@ -21,29 +21,41 @@ class FirebaseService {
   
   /// Initialize Firebase
   static Future<FirebaseService> init() async {
-    await Firebase.initializeApp();
-    
-    final analytics = FirebaseAnalytics.instance;
-    FirebaseCrashlytics? crashlytics;
-    
-    // Only use Crashlytics in non-debug mode and if platform is supported
-    if (!kDebugMode) {
-      try {
-        crashlytics = FirebaseCrashlytics.instance;
-        // Pass all uncaught errors to Crashlytics
-        FlutterError.onError = crashlytics.recordFlutterFatalError;
-        // Enable Crashlytics data collection
-        await crashlytics.setCrashlyticsCollectionEnabled(true);
-      } catch (e) {
-        // Crashlytics might not be available on all platforms
-        print('Crashlytics initialization failed: $e');
+    try {
+      await Firebase.initializeApp();
+      
+      final analytics = FirebaseAnalytics.instance;
+      FirebaseCrashlytics? crashlytics;
+      
+      // Only use Crashlytics in non-debug mode and if platform is supported
+      if (!kDebugMode) {
+        try {
+          crashlytics = FirebaseCrashlytics.instance;
+          // Pass all uncaught errors to Crashlytics
+          FlutterError.onError = crashlytics.recordFlutterFatalError;
+          // Enable Crashlytics data collection
+          await crashlytics.setCrashlyticsCollectionEnabled(true);
+        } catch (e) {
+          // Crashlytics might not be available on all platforms
+          debugPrint('Crashlytics initialization failed: $e');
+          crashlytics = null;
+        }
       }
+      
+      return FirebaseService(
+        crashlytics: crashlytics,
+        analytics: analytics,
+      );
+    } catch (e, stackTrace) {
+      debugPrint('Firebase initialization failed: $e');
+      debugPrint('Stack trace: $stackTrace');
+      
+      // Return a service with just analytics
+      return FirebaseService(
+        crashlytics: null,
+        analytics: FirebaseAnalytics.instance,
+      );
     }
-    
-    return FirebaseService(
-      crashlytics: crashlytics,
-      analytics: analytics,
-    );
   }
   
   /// Get the Crashlytics instance

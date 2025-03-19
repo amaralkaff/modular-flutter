@@ -1,0 +1,11 @@
+name: food_delivery_app
+description: A modular Flutter food delivery application
+version: 1.0.0+1
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.7.2 <4.0.0"
+  flutter: ">=3.29.2"
+
+dev_dependencies:
+  melos: ^3.4.0 

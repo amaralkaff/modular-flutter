@@ -9,7 +9,6 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
-import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i141;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -44,14 +43,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i557.ApiClient>(() => _i557.ApiClient());
     gh.singleton<_i744.LocalStorageService>(
         () => _i744.LocalStorageService(gh<_i460.SharedPreferences>()));
-    gh.singleton<_i223.FirebaseService>(() => _i223.FirebaseService(
-          crashlytics: gh<_i141.FirebaseCrashlytics>(),
-          analytics: gh<_i398.FirebaseAnalytics>(),
-        ));
-    gh.singleton<_i221.AppLogger>(
-        () => _i221.AppLogger(crashlytics: gh<_i141.FirebaseCrashlytics>()));
-    gh.singleton<_i76.AnalyticsService>(
-        () => _i76.AnalyticsService(gh<_i398.FirebaseAnalytics>()));
+    
+    // Manual registration for FirebaseService, FirebaseCrashlytics, and related services
     return this;
   }
 }
