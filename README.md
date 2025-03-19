@@ -49,18 +49,18 @@ This guide provides a comprehensive step-by-step checklist for implementing a mo
   - [x] Add ratings and reviews display
 
 ### Phase 4: Cart & Checkout Module
-- [ ] 1. Set up storage
-  - [ ] Configure Hive for offline cart functionality
-  - [ ] Create cart repository with Cloud Firestore sync
-- [ ] 2. Implement cart logic
-  - [ ] Add item management (add/remove/modify)
-  - [ ] Create cart totals calculation
-  - [ ] Implement promo code validation
-- [ ] 3. Build checkout flow
-  - [ ] Create address selection interface
-  - [ ] Implement delivery time selection
-  - [ ] Build payment method selection
-  - [ ] Add order review and confirmation screens
+- [x] 1. Set up storage
+  - [x] Configure Hive for offline cart functionality
+  - [x] Create cart repository with Cloud Firestore sync
+- [x] 2. Implement cart logic
+  - [x] Add item management (add/remove/modify)
+  - [x] Create cart totals calculation
+  - [x] Implement promo code validation
+- [x] 3. Build checkout flow
+  - [x] Create address selection interface
+  - [x] Implement delivery time selection
+  - [x] Build payment method selection
+  - [x] Add order review and confirmation screens
 
 ### Phase 5: Orders Module
 - [ ] 1. Set up real-time data layer

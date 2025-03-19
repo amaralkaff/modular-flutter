@@ -29,15 +29,15 @@ class MenuItem {
     final data = doc.data() as Map<String, dynamic>;
     return MenuItem(
       id: doc.id,
-      restaurantId: data['restaurantId'] ?? '',
-      name: data['name'] ?? '',
-      description: data['description'] ?? '',
-      price: (data['price'] ?? 0.0).toDouble(),
-      imageUrl: data['imageUrl'] ?? '',
-      category: data['category'] ?? '',
-      isAvailable: data['isAvailable'] ?? true,
-      ingredients: List<String>.from(data['ingredients'] ?? []),
-      customizationOptions: data['customizationOptions'] ?? {},
+      restaurantId: data['restaurantId']?.toString() ?? '',
+      name: data['name']?.toString() ?? '',
+      description: data['description']?.toString() ?? '',
+      price: (data['price'] as num?)?.toDouble() ?? 0.0,
+      imageUrl: data['imageUrl']?.toString() ?? '',
+      category: data['category']?.toString() ?? '',
+      isAvailable: data['isAvailable'] as bool? ?? true,
+      ingredients: (data['ingredients'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      customizationOptions: (data['customizationOptions'] as Map<String, dynamic>?) ?? {},
     );
   }
 

@@ -35,18 +35,18 @@ class Restaurant {
     final data = doc.data() as Map<String, dynamic>;
     return Restaurant(
       id: doc.id,
-      name: data['name'] ?? '',
-      description: data['description'] ?? '',
-      imageUrl: data['imageUrl'] ?? '',
-      rating: (data['rating'] ?? 0.0).toDouble(),
-      totalRatings: data['totalRatings'] ?? 0,
-      cuisine: data['cuisine'] ?? '',
-      deliveryFee: (data['deliveryFee'] ?? 0.0).toDouble(),
-      estimatedDeliveryTime: data['estimatedDeliveryTime'] ?? 30,
-      isOpen: data['isOpen'] ?? false,
-      location: data['location'] ?? const GeoPoint(0, 0),
-      menuCategories: List<String>.from(data['menuCategories'] ?? []),
-      operatingHours: data['operatingHours'] ?? {},
+      name: data['name']?.toString() ?? '',
+      description: data['description']?.toString() ?? '',
+      imageUrl: data['imageUrl']?.toString() ?? '',
+      rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      totalRatings: (data['totalRatings'] as num?)?.toInt() ?? 0,
+      cuisine: data['cuisine']?.toString() ?? '',
+      deliveryFee: (data['deliveryFee'] as num?)?.toDouble() ?? 0.0,
+      estimatedDeliveryTime: (data['estimatedDeliveryTime'] as num?)?.toInt() ?? 30,
+      isOpen: data['isOpen'] as bool? ?? false,
+      location: (data['location'] as GeoPoint?) ?? const GeoPoint(0, 0),
+      menuCategories: (data['menuCategories'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      operatingHours: (data['operatingHours'] as Map<String, dynamic>?) ?? {},
     );
   }
 
