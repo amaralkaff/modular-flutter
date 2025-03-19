@@ -34,19 +34,19 @@ This guide provides a comprehensive step-by-step checklist for implementing a mo
   - [x] Build user onboarding flow
 
 ### Phase 3: Restaurant Catalog Module
-- [ ] 1. Create data layer
-  - [ ] Define restaurant and menu item models in Cloud Firestore
-  - [ ] Implement restaurant repository
-  - [ ] Create API services for restaurant data
-- [ ] 2. Implement domain layer
-  - [ ] Define use cases for restaurant listing and filtering
-  - [ ] Create search functionality using Cloud Firestore queries
-  - [ ] Implement location-based restaurant sorting
-- [ ] 3. Build UI components
-  - [ ] Design restaurant list and detail screens
-  - [ ] Create menu browsing interface
-  - [ ] Implement search and filter components
-  - [ ] Add ratings and reviews display
+- [x] 1. Create data layer
+  - [x] Define restaurant and menu item models in Cloud Firestore
+  - [x] Implement restaurant repository
+  - [x] Create API services for restaurant data
+- [x] 2. Implement domain layer
+  - [x] Define use cases for restaurant listing and filtering
+  - [x] Create search functionality using Cloud Firestore queries
+  - [x] Implement location-based restaurant sorting
+- [x] 3. Build UI components
+  - [x] Design restaurant list and detail screens
+  - [x] Create menu browsing interface
+  - [x] Implement search and filter components
+  - [x] Add ratings and reviews display
 
 ### Phase 4: Cart & Checkout Module
 - [ ] 1. Set up storage
