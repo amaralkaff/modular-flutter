@@ -1,0 +1,30 @@
+name: food_delivery_app
+repository: https://github.com/yourusername/food_delivery_app
+
+packages:
+  - packages/**
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+scripts:
+  analyze:
+    run: melos exec -- "flutter analyze"
+    description: Run flutter analyze in all packages
+
+  format:
+    run: melos exec -- "flutter format lib/** --set-exit-if-changed"
+    description: Run flutter format in all packages
+
+  test:
+    run: melos exec -- "flutter test"
+    description: Run flutter test in all packages
+
+  build:customer:
+    run: cd packages/apps/customer && flutter build apk
+    description: Build customer app APK
+
+  build:driver:
+    run: cd packages/apps/driver && flutter build apk
+    description: Build driver app APK 
