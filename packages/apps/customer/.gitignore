@@ -43,3 +43,20 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment Files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.env
+
+# Firebase configuration files with sensitive data
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+firebase_app_id_file.json
+
+# Mapbox configuration
+android/app/src/main/res/values/mapbox_api_key.xml

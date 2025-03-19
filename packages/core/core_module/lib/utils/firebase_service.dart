@@ -22,7 +22,15 @@ class FirebaseService {
   /// Initialize Firebase
   static Future<FirebaseService> init() async {
     try {
-      await Firebase.initializeApp();
+      // Check if Firebase app is already initialized
+      try {
+        Firebase.app();
+        debugPrint('Firebase already initialized, skipping initialization');
+      } catch (e) {
+        // If Firebase isn't already initialized, initialize it
+        debugPrint('Initializing Firebase');
+        await Firebase.initializeApp();
+      }
       
       final analytics = FirebaseAnalytics.instance;
       FirebaseCrashlytics? crashlytics;
@@ -67,7 +75,7 @@ class FirebaseService {
   /// Set user identifier for both Crashlytics and Analytics
   Future<void> setUserIdentifier(String? userId) async {
     if (_crashlytics != null && !kDebugMode) {
-      await _crashlytics!.setUserIdentifier(userId ?? 'anonymous');
+      await _crashlytics.setUserIdentifier(userId ?? 'anonymous');
     }
     
     await _analytics.setUserId(id: userId);
@@ -81,7 +89,7 @@ class FirebaseService {
     bool fatal = false,
   }) async {
     if (_crashlytics != null && !kDebugMode) {
-      await _crashlytics!.recordError(
+      await _crashlytics.recordError(
         exception,
         stack,
         reason: reason,
@@ -102,7 +110,7 @@ class FirebaseService {
       
       // Forward to crashlytics in non-debug mode
       if (!kDebugMode && _crashlytics != null) {
-        _crashlytics!.recordFlutterFatalError(details);
+        _crashlytics.recordFlutterFatalError(details);
       }
     };
     
@@ -116,7 +124,7 @@ class FirebaseService {
       
       // Forward to crashlytics in non-debug mode
       if (!kDebugMode && _crashlytics != null) {
-        _crashlytics!.recordError(error, stack, fatal: true);
+        _crashlytics.recordError(error, stack, fatal: true);
       }
       
       return true;

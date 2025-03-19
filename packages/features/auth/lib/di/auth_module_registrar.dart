@@ -1,8 +1,4 @@
 import 'package:auth/auth.dart';
-import 'package:auth/bloc/auth_bloc.dart';
-import 'package:auth/repositories/auth_repository.dart';
-import 'package:auth/services/auth_service.dart';
-import 'package:auth/services/auth_middleware.dart';
 import 'package:get_it/get_it.dart';
 
 /// Auth module registrar that registers all dependencies for the auth module

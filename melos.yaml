@@ -1,5 +1,5 @@
 name: food_delivery_app
-repository: https://github.com/yourusername/food_delivery_app
+repository: https://github.com/amaralkaff/modular-flutter
 
 packages:
   - packages/**

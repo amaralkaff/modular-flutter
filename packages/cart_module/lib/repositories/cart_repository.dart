@@ -72,7 +72,7 @@ class CartRepository {
         if (item is Map) {
           return CartItem.fromJson(Map<String, dynamic>.from(item));
         }
-        return CartItem(
+        return const CartItem(
           id: 'error',
           name: 'Error Item',
           price: 0,

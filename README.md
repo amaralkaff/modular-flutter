@@ -63,34 +63,34 @@ This guide provides a comprehensive step-by-step checklist for implementing a mo
   - [x] Add order review and confirmation screens
 
 ### Phase 5: Orders Module
-- [ ] 1. Set up real-time data layer
-  - [ ] Configure Cloud Firestore real-time listeners
-  - [ ] Create WebSocket connections for order updates
-  - [ ] Implement order repository
-- [ ] 2. Build order management
-  - [ ] Create order placement functionality
-  - [ ] Implement order status tracking
-  - [ ] Add order history and details viewing
-  - [ ] Implement order cancellation flow
-- [ ] 3. Design order UI
-  - [ ] Create order confirmation screen
-  - [ ] Build order tracking interface
-  - [ ] Implement order history list
-  - [ ] Add order details view
+- [x] 1. Set up real-time data layer
+  - [x] Configure Cloud Firestore real-time listeners
+  - [x] Create WebSocket connections for order updates
+  - [x] Implement order repository
+- [x] 2. Build order management
+  - [x] Create order placement functionality
+  - [x] Implement order status tracking
+  - [x] Add order history and details viewing
+  - [x] Implement order cancellation flow
+- [x] 3. Design order UI
+  - [x] Create order confirmation screen
+  - [x] Build order tracking interface
+  - [x] Implement order history list
+  - [x] Add order details view
 
 ### Phase 6: Live Tracking Module
-- [ ] 1. Set up maps integration
-  - [ ] Configure Google Maps/Mapbox SDK
-  - [ ] Create map repository and services
-- [ ] 2. Implement real-time tracking
-  - [ ] Set up location services with Cloud Functions
-  - [ ] Create driver location updates using Cloud Firestore
-  - [ ] Build route calculation and ETA estimation
-- [ ] 3. Design tracking UI
-  - [ ] Create tracking map screen
-  - [ ] Implement driver and restaurant markers
-  - [ ] Add delivery progress indicators
-  - [ ] Build delivery status updates
+- [x] 1. Set up maps integration
+  - [x] Configure Google Maps/Mapbox SDK
+  - [x] Create map repository and services
+- [x] 2. Implement real-time tracking
+  - [x] Set up location services with Geolocator package
+  - [x] Create driver location updates using Cloud Firestore
+  - [x] Build route calculation and ETA estimation
+- [x] 3. Design tracking UI
+  - [x] Create tracking map screen
+  - [x] Implement driver and restaurant markers
+  - [x] Add delivery progress indicators
+  - [x] Build delivery status updates
 
 ### Phase 7: Payment Module
 - [ ] 1. Configure payment processors

@@ -75,11 +75,11 @@ class AppLogger {
     LogLevel level,
   ) {
     if (_crashlytics != null && !kDebugMode) {
-      _crashlytics!.setCustomKey('log_level', level.toString());
-      _crashlytics!.setCustomKey('log_message', message);
+      _crashlytics.setCustomKey('log_level', level.toString());
+      _crashlytics.setCustomKey('log_message', message);
       
       if (error != null) {
-        _crashlytics!.recordError(
+        _crashlytics.recordError(
           error,
           stackTrace,
           reason: message,

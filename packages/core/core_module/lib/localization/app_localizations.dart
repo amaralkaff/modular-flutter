@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 import 'translations/en_translations.dart';

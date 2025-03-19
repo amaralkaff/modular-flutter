@@ -2,10 +2,18 @@
     <!-- Internet permission needed for Firebase Authentication -->
     <uses-permission android:name="android.permission.INTERNET" />
     
+    <!-- Permissions needed for Mapbox Maps Flutter SDK -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
     <application
         android:label="customer_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Mapbox configuration is done programmatically in the app -->
+        <!-- Do not hardcode API keys in the manifest for security reasons -->
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -6,9 +6,9 @@ class RestaurantListScreen extends StatefulWidget {
   final GetRestaurantsUseCase getRestaurantsUseCase;
 
   const RestaurantListScreen({
-    Key? key,
+    super.key,
     required this.getRestaurantsUseCase,
-  }) : super(key: key);
+  });
 
   @override
   State<RestaurantListScreen> createState() => _RestaurantListScreenState();
@@ -85,9 +85,9 @@ class _RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
 
   const _RestaurantCard({
-    Key? key,
+    super.key,
     required this.restaurant,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

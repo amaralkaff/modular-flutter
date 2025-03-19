@@ -71,7 +71,7 @@ class FirestoreRestaurantRepository implements RestaurantRepository {
     final snapshot = await _firestore
         .collection('menu_items')
         .where('name', isGreaterThanOrEqualTo: query)
-        .where('name', isLessThanOrEqualTo: query + '\uf8ff')
+        .where('name', isLessThanOrEqualTo: '$query\uf8ff')
         .get();
     
     return snapshot.docs.map((doc) => MenuItem.fromFirestore(doc)).toList();

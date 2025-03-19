@@ -167,14 +167,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
     final result = await _authRepository.signInWithGoogle(role: event.role);
-    result.fold(
-      (error) => emit(AuthError(error)),
+    
+    await result.fold(
+      (error) async {
+        if (!emit.isDone) {
+          emit(AuthError(error));
+        }
+      },
       (user) async {
         final roleResult = await _authRepository.getUserRole();
-        roleResult.fold(
-          (error) => emit(AuthError(error)),
-          (role) => emit(Authenticated(user, role)),
-        );
+        
+        if (!emit.isDone) {
+          roleResult.fold(
+            (error) => emit(AuthError(error)),
+            (role) => emit(Authenticated(user, role)),
+          );
+        }
       },
     );
   }

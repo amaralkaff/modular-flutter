@@ -8,10 +8,10 @@ class RestaurantDetailScreen extends StatefulWidget {
   final RestaurantRepository repository;
 
   const RestaurantDetailScreen({
-    Key? key,
+    super.key,
     required this.restaurant,
     required this.repository,
-  }) : super(key: key);
+  });
 
   @override
   State<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
@@ -282,9 +282,9 @@ class _MenuItemCard extends StatelessWidget {
   final MenuItem menuItem;
 
   const _MenuItemCard({
-    Key? key,
+    super.key,
     required this.menuItem,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

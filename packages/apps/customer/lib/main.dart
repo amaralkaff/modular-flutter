@@ -1,17 +1,17 @@
 import 'package:core_module/core_module.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:auth/di/auth_module_registrar.dart';
 import 'package:auth/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:io';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'app_routes.dart';
 import 'firebase_options.dart';
+import 'utils/env_loader.dart';
+import 'utils/app_dependencies.dart';
 
 /// Global variable to prevent double initialization
 bool _routesInitialized = false;
@@ -94,90 +94,130 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   }
 }
 
+/// Initialize Mapbox with proper error handling
+Future<void> initializeMapbox() async {
+  try {
+    // Get access token from environment
+    final accessToken = dotenv.env['MAPBOX_ACCESS_TOKEN'];
+    if (accessToken == null || accessToken.isEmpty) {
+      debugPrint('WARNING: Mapbox access token not found in environment');
+      return;
+    }
+    
+    // Set the global access token for Mapbox
+    MapboxOptions.setAccessToken(accessToken);
+    debugPrint('Mapbox initialized successfully');
+  } catch (e, stackTrace) {
+    debugPrint('Error initializing Mapbox: $e');
+    debugPrint('Stack trace: $stackTrace');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   try {
-    // Print debug package name and platform
-    final packageName = Platform.isAndroid ? "com.amangly.app" : "com.example.app";
-    debugPrint('Package name: $packageName');
-    debugPrint('Platform: ${Platform.operatingSystem}');
-    debugPrint('⚠️ IMPORTANT: For Google Sign-In to work, add your SHA-1 fingerprint to Firebase Console!');
-    debugPrint('⚠️ Run: keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android');
+    // Load environment variables first
+    await loadEnvironmentVariables();
     
-    // Initialize Firebase services
+    // Initialize Firebase with proper error handling
     try {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
       debugPrint('Firebase initialized successfully');
-    } catch (firebaseError) {
-      debugPrint('Firebase initialization error: $firebaseError');
-      // Continue execution - the FirebaseService will handle fallbacks
+    } catch (e) {
+      // Check if the error is related to Firebase configuration
+      if (e.toString().contains('api-key') || 
+          e.toString().contains('placeholder') ||
+          e.toString().contains('configuration')) {
+        // Show a more helpful error for configuration issues
+        runApp(MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Firebase Configuration Error',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'The Firebase configuration in firebase_options.dart contains placeholder values.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Please generate proper Firebase configuration using the FlutterFire CLI:',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('dart pub global activate flutterfire_cli'),
+                          SizedBox(height: 8),
+                          Text('flutterfire configure'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ));
+        return; // Stop execution here
+      }
+      
+      // If Firebase fails to initialize for other reasons, log the error but continue
+      debugPrint('Firebase initialization issue: $e');
+      // We can continue without Firebase in some cases
     }
     
-    final firebaseService = await FirebaseService.init();
-    debugPrint('FirebaseService initialized');
+    // Initialize Mapbox
+    await initializeMapbox();
     
-    // Configure dependencies
-    await configureDependencies(environment: Env.dev);
-    debugPrint('Dependencies configured');
-    
-    // Initialize local storage (already registered by DI)
-    final storageService = await LocalStorageService.init();
-    debugPrint('LocalStorage initialized');
-    
-    // Register services that aren't handled by the DI system
-    if (!getIt.isRegistered<FirebaseService>()) {
-      getIt.registerSingleton<FirebaseService>(firebaseService);
+    // Setup error reporting if Firebase Crashlytics is available
+    try {
+      FlutterError.onError = (details) {
+        debugPrint('Flutter error: ${details.exception}');
+        try {
+          FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+        } catch (e) {
+          // Crashlytics might not be available
+          debugPrint('Error reporting to Crashlytics: $e');
+        }
+      };
+    } catch (e) {
+      debugPrint('Error setting up error reporting: $e');
     }
     
-    if (!getIt.isRegistered<FirebaseAnalytics>()) {
-      getIt.registerSingleton<FirebaseAnalytics>(firebaseService.analytics);
-    }
-    
-    if (!getIt.isRegistered<AnalyticsService>()) {
-      getIt.registerSingleton<AnalyticsService>(AnalyticsService(firebaseService.analytics));
-    }
-    
-    if (!getIt.isRegistered<AppLogger>()) {
-      getIt.registerSingleton<AppLogger>(AppLogger(crashlytics: firebaseService.crashlytics));
-    }
-    
-    // Register auth module
-    final authModuleRegistrar = AuthModuleRegistrar(getIt);
-    await authModuleRegistrar.register();
-    debugPrint('Auth module registered');
-    
-    // Configure error handling
-    firebaseService.configureErrorHandling(getIt<AppLogger>());
-    
-    // Initialize app router
-    final appRouter = getIt<AppRouter>();
-    
-    // Configure auth middleware
-    final authMiddleware = getIt<AuthMiddleware>();
-    appRouter.setRedirect(authMiddleware.handleRedirect);
-    debugPrint('Auth middleware configured');
-    
-    // Only register routes once
-    if (!_routesInitialized) {
-      // Register route provider
-      final routeProvider = CustomerAppRoutes();
-      appRouter.addRoutes(routeProvider.routes);
-      _routesInitialized = true;
-      debugPrint('Routes registered');
-    }
+    // Register all modules
+    await setupAppDependencies();
     
     runApp(const MyApp());
   } catch (e, stackTrace) {
+    // Log the error
     debugPrint('Error initializing app: $e');
     debugPrint('Stack trace: $stackTrace');
-    // Show error screen
-    runApp(MaterialApp(
+    
+    // Still run the app, but in a safer mode
+    runApp(const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Error initializing app: $e'),
+          child: Text('App initialization error. Please restart the app.'),
         ),
       ),
     ));
@@ -284,6 +324,14 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
                 child: Text('ok'.tr(context)),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to restaurants list
+                  context.go('/restaurants');
+                },
+                child: Text('Browse Restaurants'),
               ),
               const SizedBox(height: 16),
               BlocBuilder<AuthBloc, AuthState>(

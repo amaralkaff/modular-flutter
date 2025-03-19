@@ -135,7 +135,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       emit(CartLoading());
       await _repository.clearCart();
-      emit(CartLoaded(items: [], total: 0));
+      emit(const CartLoaded(items: [], total: 0));
     } catch (e) {
       emit(CartError(e.toString()));
     }

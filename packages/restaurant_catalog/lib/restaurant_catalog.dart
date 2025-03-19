@@ -12,3 +12,6 @@ export 'domain/use_cases/search_menu_items_use_case.dart';
 // Screens
 export 'presentation/screens/restaurant_list_screen.dart';
 export 'presentation/screens/restaurant_detail_screen.dart';
+
+// DI
+export 'di/restaurant_catalog_module_registrar.dart';
